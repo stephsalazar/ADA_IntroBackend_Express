@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const bodyParser = require('body-parser');
+const { log } = require('console');
 
 const port = 3030;
 
@@ -11,21 +12,25 @@ const arrayPerritos = [
     raza: 'pitbull',
     color: 'gris',
     edad: 'cachorro',
+    id: 0
   },
   {
     raza: 'chihuahua',
     color: 'miel',
     edad: 'adulto',
+    id: 1
   },
   {
     raza: 'labrador',
     color: 'negro',
     edad: 'joven',
+    id: 2
   },
   {
     raza: 'bulldog',
     color: 'blanco&cafe',
     edad: 'adulto',
+    id: 3
   },
 ]
 
@@ -66,6 +71,42 @@ app.get('/fotosGatitos', function(req, res) {
 
 app.get('/perritos', (req, res) => {
   res.json(arrayPerritos);
+});
+
+app.post('/perritos', (req, res) => {
+  const datos = req.body;
+  arrayPerritos.push(datos);
+
+  console.log(arrayPerritos);
+
+  res.status(201)
+  res.json(arrayPerritos)
+});
+
+app.put('/perritos/:id', (req, res) => {
+  const id = req.params.id;
+  const perritoIndicado = arrayPerritos[id];
+  const edad = req.body.edad
+
+  perritoIndicado.edad = edad;
+  perritoIndicado.color = req.body.color;
+ 
+  console.log(perritoIndicado);
+  res.status(200).send(perritoIndicado);  
+});
+
+app.delete('/perritos/:id', (req, res) => {
+  const id = req.params.id;
+
+  for(let index = 0; index < arrayPerritos.length; index++) {
+    if(arrayPerritos[index].id == id){
+      arrayPerritos.splice(index, 1);
+    }
+  }
+
+  console.log('Array original', arrayPerritos);
+
+  res.status(200).send("Elemento eliminado");
 });
 
 
